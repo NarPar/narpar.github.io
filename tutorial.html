@@ -74,19 +74,47 @@
 
 <p>We'll be using these as we go.</p>
 
-<h3>3. Scenes</h3>
+<h3>3. Making a Scene</h3>
 
 <p>There can be multiple scenes within your project. One scene might be the main menu, several might be levels in the game, and another might be the game over screen.</p>
 
 <p>Scenes contain the <i>game objects</i> that actually make the game happen.</p>
 
-<h3>4. </h3>
+<p>Before we go and add some objects to the game, let's add a skybox to our scene.</p>
+
+<p>You can check the Unity Asset Store for all the assets you might need! While there are some free assets out there, most will cost you. I've already downloaded a free skybox from the asset store, so grab it <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and drag it into your Project View.</p>
+
+<p>Now select Edit and Render Settings. This will open up some properties in your Inspector View. One of these properties is "skybox". Just drag the skybox material onto that property and you're set! Looks pretty, doesn't it?</p>
+
+<h3>4. HUD</h3>
+
+<p>Our HUD will include a targetting reticle, which is controlled by the mouse. We first need to add the reticle graphic to the project, then create a script to draw the reticle.</p>
+
+<p>Head <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and grab the reticle texture from the projects repository.</p>
+
+<p>Download this file, and then drag it into the Project View of the Unity 3D interface, adding it to your assets.</p>
+
+<p>Now that we have the file, we need to create the script to draw the texture at the center of the mouse position. We'll be using javascript. Right-click on the Project View and create a javascript file. Then, open that file and add the following code:</p>
 
 <pre><code>
-function getsome{
-	return some;
+#pragma strict
+
+var reticle:Texture;
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnGUI() {
+	GUI.DrawTexture(Rect(Input.mousePosition.x - 75,Screen.height - Input.mousePosition.y - 75,150,150),reticle);
 }
 </code></pre>
+
+<p>If you read it carefully, it's pretty straight forward.</p>
 
         </article>
       </div>

@@ -67,6 +67,30 @@ a:hover {
   color: #90D355;
 }
 
+ul.menu
+{
+	list-style-type:none;
+	overflow:hidden;
+	font-size: 20px;
+}
+
+li.menu {
+	float:left;
+	width:40px;
+	margin: 40px 30px 1px;
+}
+
+h2 {
+	font-size: 20px;
+	margin: 5px 5px 5px;
+}
+
+h2.title {
+	color: white;
+	font-size: 30px;
+	margin: 5px 5px 5px;
+}
+
 h1.title {
   margin: 30px 20px 10px;
   font-size: 60px;

@@ -100,7 +100,7 @@
 
 <h3>4. HUD</h3>
 
-<p>Open the game scene. Our HUD will include a targetting reticle, which is controlled by the mouse. And a health bar.</p>
+<p>Open the game scene. Our HUD will include a targetting reticle, which is controlled by the mouse, and a health bar.</p>
 
 <p>We first need to add a reticle graphic and a health bar graphic to the project, then create a script to draw them.</p>
 
@@ -242,6 +242,15 @@ function Update () {
 
 <p>The variable <mark>bullet</mark> will hold the Bullet prefab we created. This prefab is instantiated when the <mark>left mouse button</mark> is clicked. The raycasting is to get the direction the bullet should be going in.</p>
 
+<p>Last thing we need to do with the guns is position them by the camera. Since we have a prefab, go ahead and <mark>delete</mark> the Gun object from the Hierarchy View.</p>
+
+<p>Now drag the Gun prefab from the Project View onto the Main Camera object into the Hierarchy View. This will make it a <mark>child</mark> of the Main Camera object. This makes it easier to reference the gun from scripts on the Main Camera, as well as positions the gun relative to the Main Camera, in case we want to move it around later!</p>
+
+<p>Let's give our player 2 guns, so drag another one onto the Main Camera.</p>
+
+<p>Now select one of the guns and change it's position in the Inspector View to <mark>x: -1, y: 0, z: 0</mark>. This will position it slightly left of the camera.</p>
+
+<p>And set the other guns position to <mark>x:1, y: 0, z: 0</mark>. Now you're player is equipped for some double-barreled action.</p>
 
 
 <h3>5. Asteroids</h3>
@@ -253,6 +262,19 @@ function Update () {
 <p>Create a new object: <mark>GameObject->Create Other->Plane</mark>.</p>
 
 <p>Create a new folder in the Project View: <mark>Right-Click->Create->Folder</mark>, and name it Asteroid.</p>
+
+<p>In that folder, create a javascript file: <mark>Right-Click->Create->Javascript</mark>, and name it Billboard, and drag it onto the Asteroid object in the Hierarchy View.</p>
+
+<p>Now open the Billboard javascript file and add the following code:</p>
+
+<pre><code>#pragma strict
+
+function Update () {
+	transform.LookAt(Camera.main.transform);
+	transform.Rotate(Vector3(90,0,0));
+}</code></pre>
+
+<p>This script makes the plane always face the camera. Note that the face of the plane faces up, so we have to rotate it 90 degrees.</p>
 
 <p>In that folder, create a <mark>Prefab</mark> in the Project View: <mark>Right-Click->Create->Prefab</mark>, and name it Asteroid as well.</p>
 

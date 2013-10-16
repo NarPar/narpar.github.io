@@ -81,7 +81,7 @@
 
 <p>Unity projects are made up of <i>scenes</i>. These scenes contain the <i>game objects</i> that actually make the game happen.</p>
 
-<p>We'll need 3 scenes for this game: a menu scene, a game scene, and a gameover scene. Create a scene by going <mark>File->New Scene</mark> and hit <mark>ctrl+s</mark> to save it. Do this for our 3 scenes.</p>
+<p>We'll need 3 scenes for this game: a menu scene, a game scene, and a gameover scene. Create a scene by going <mark>File->New Scene</mark> and hit <mark>ctrl+s</mark> to save it. Do this for our 3 scenes. You'll notice a <i>Main Camera</i> object in the Hierarchy View. We'll be using that later.</p>
 
 <p>Before we go and add some objects to our scenes, let's give them each a <i>skybox</i>.</p>
 
@@ -100,33 +100,60 @@
 
 <h3>4. HUD</h3>
 
-<p>Our HUD will include a targetting reticle, which is controlled by the mouse. We first need to add the reticle graphic to the project, then create a script to draw the reticle.</p>
+<p>Open the game scene. Our HUD will include a targetting reticle, which is controlled by the mouse. And a health bar.</p>
 
-<p>Head <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and grab the reticle texture from the projects repository.</p>
+<p>We first need to add a reticle graphic and a health bar graphic to the project, then create a script to draw them.</p>
 
-<p>Download this file, and then drag it into the Project View of the Unity 3D interface, adding it to your assets.</p>
+<p>Head <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and download <mark>reticle.png</mark> and <mark>hp.png</mark> from the projects repository.</p>
 
-<p>Now that we have the file, we need to create the script to draw the texture at the center of the mouse position. We'll be using javascript. Right-click on the Project View and create a javascript file. Then, open that file and add the following code:</p>
+<p>Now drag them into the Project View of the Unity 3D interface, adding them to your assets. I recommend creating a folder (<mark>right-click->Create->Folder</mark>) and naming it HUD to place these in.</p>
+
+<p>Now create a javascript file in the Project View: <mark>Right-Click->Create->Javascript</mark>. We'll use this to draw the texture at the center of the mouse position, and display the player's hp.</p>
+
+<p>Open that file (probably in MonoDevelop) and add the following code:</p>
 
 <pre><code>
 #pragma strict
 
 var reticle:Texture;
+var hp:Texture;
+
+private var fullHp:float = 10.0f;
+private var currHp:float;
+private var fullWidth:float;
+
+private var hpBar:Rect;
 
 function Start () {
-
+	fullWidth = Screen.width / 3;
+	
+	currHp = fullHp;
+	
+	hpBar = Rect(Screen.width / 3, 18 * Screen.height / 20, fullWidth, 50);
 }
 
 function Update () {
-
+	hpBar.width = fullWidth * (currHp/fullHp);
 }
 
 function OnGUI() {
 	GUI.DrawTexture(Rect(Input.mousePosition.x - 75,Screen.height - Input.mousePosition.y - 75,150,150),reticle);
+	
+	GUI.DrawTexture(hpBar,hp);
 }
 </code></pre>
 
-<p>If you read it carefully, it's pretty straight forward.</p>
+<p>Now don't be afraid. Most of the hubbub is just positioning our textures on the screen, and calculating our hp bar width. I'll be going into detail about this in my physical tutorial, and will later update this tutorial with the details.</p> 
+
+<p>Save this file and return to Unity 3D. In this game, our player will be represented by the Main Camera. It is important to note that the OnGUI() in our script will only work when attached to a Camera object.</p>
+
+<p>Drag our HUD script from the Project View onto the Main Camera in the Hierarchy View.</p>
+
+<p>Select the Main Camera in the Hierarchy View, and note its components listed in the Inspection View. You should see HUD at the bottom.</p>
+
+<p>Under the HUD components name you should see the <i>reticle</i> and <i>hp</i> variables. From the Project View, drag the corresponding textures onto thos variables.</p>
+
+<p>Click the Play button at the top of the window to test the game. You should see the reticle following the mouse and a red health bar at the bottom of the screen.</p>
 
         </article>
       </div>

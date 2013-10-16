@@ -44,10 +44,12 @@
         <span class="blc"></span><span class="trc"></span>
         </div>
         <article class="markdown-body">
-          <h3>
+         
+
 <h3>1. Let's get this thing started</h3>
 
 <p>Open Unity 3D and go to <mark>file->New Project</mark>. Call it what you want and don't worry about importing anything.</p>
+
 
 <h3>2. The interface</h3>
 
@@ -74,17 +76,27 @@
 
 <p>We'll be using these as we go.</p>
 
+
 <h3>3. Making a Scene</h3>
 
-<p>There can be multiple scenes within your project. One scene might be the main menu, several might be levels in the game, and another might be the game over screen.</p>
+<p>Unity projects are made up of <i>scenes</i>. These scenes contain the <i>game objects</i> that actually make the game happen.</p>
 
-<p>Scenes contain the <i>game objects</i> that actually make the game happen.</p>
+<p>We'll need 3 scenes for this game: a menu scene, a game scene, and a gameover scene. Create a scene by going <mark>File->New Scene</mark> and hit <mark>ctrl+s</mark> to save it. Do this for our 3 scenes.</p>
 
-<p>Before we go and add some objects to the game, let's add a skybox to our scene.</p>
+<p>Before we go and add some objects to our scenes, let's give them each a <i>skybox</i>.</p>
 
-<p>You can check the Unity Asset Store for all the assets you might need! While there are some free assets out there, most will cost you. I've already downloaded a free skybox from the asset store, so grab it <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and drag it into your Project View.</p>
+<p>The Unity Asset Store has plenty of assets avaialble to download. Some, however, cost money. You can visit the asset store via <mark>Window->Asset Store</mark>.</p>
 
-<p>Now select Edit and Render Settings. This will open up some properties in your Inspector View. One of these properties is "skybox". Just drag the skybox material onto that property and you're set! Looks pretty, doesn't it?</p>
+<p>I've already downloaded a free skybox from the asset store, so grab it <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and drag it into your Project View.</p>
+
+<p>The skybox is 6 textures representing the inner faces of a cube, stored as a <i>material</i>. A material has the sphere icon.</p>
+
+<p>To add the skybox to a scene go <mark>Edit->Render Settings</mark>. This will open up some properties in your Inspector View. One of these properties is "skybox". Just drag the skybox material from your Project View onto that property and you're set!</p>
+
+<p>Go a head and do this for our 3 scenes. Just double-click the scene to open it, add the skybox, and hit ctrl-s to save it.</p>
+
+<p>Looks pretty, doesn't it?</p>
+
 
 <h3>4. HUD</h3>
 

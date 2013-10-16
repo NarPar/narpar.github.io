@@ -104,7 +104,7 @@
 
 <p>We first need to add a reticle graphic and a health bar graphic to the project, then create a script to draw them.</p>
 
-<p>Head <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and download <mark>reticle.png</mark> and <mark>hp.png</mark> from the projects repository.</p>
+<p>Head <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and download <mark>reticle.png</mark> and <mark>hp.png</mark> from the project's repository.</p>
 
 <p>Now drag them into the Project View of the Unity 3D interface, adding them to your assets. I recommend creating a folder (<mark>right-click->Create->Folder</mark>) and naming it HUD to place these in.</p>
 
@@ -112,8 +112,7 @@
 
 <p>Open that file (probably in MonoDevelop) and add the following code:</p>
 
-<pre><code>
-#pragma strict
+<pre><code>#pragma strict
 
 var reticle:Texture;
 var hp:Texture;
@@ -140,8 +139,7 @@ function OnGUI() {
 	GUI.DrawTexture(Rect(Input.mousePosition.x - 75,Screen.height - Input.mousePosition.y - 75,150,150),reticle);
 	
 	GUI.DrawTexture(hpBar,hp);
-}
-</code></pre>
+}</code></pre>
 
 <p>Now don't be afraid. Most of the hubbub is just positioning our textures on the screen, and calculating our hp bar width. I'll be going into detail about this in my physical tutorial, and will later update this tutorial with the details.</p> 
 
@@ -154,6 +152,338 @@ function OnGUI() {
 <p>Under the HUD components name you should see the <mark>reticle</mark> and <mark>hp</mark> variables. From the Project View, drag the corresponding textures onto those variables.</p>
 
 <p>Click the Play button at the top of the window to test the game. You should see the reticle following the mouse and a red health bar at the bottom of the screen.</p>
+
+
+<h3>5. Bullets</h3>
+
+<p>Create a new object: <mark>GameObject->Create Other->Sphere</mark>. This will be the starting point for our bullets. In the Hierarchy View, rename the Sphere to Bullet.</p>
+
+
+
+<p>Create a new folder in the Project View: <mark>Right-Click->Create->Folder</mark>, and name it Bullet.</p>
+
+<p>In that folder, create a <mark>Prefab</mark> in the Project View: <mark>Right-Click->Create->Prefab</mark>, and name it Bullet as well.</p>
+
+<p>And finally, also in that folder, create a javascript file in the Project View: <mark>Right-Click->Create->Javascript</mark>, also name it Bullet.</p>
+
+<p>Now drag the new javascript file onto the Bullet object in the Hierarchy View, adding the script as one of it's components.</p>
+
+<p>Add a <mark>Rigidbody</mark> component to the Bullet object in the Hierarchy View. Select the Bullet then go: <mark>Component->Physics->Rigidbody</mark>. This rigidbody component allows it to collide with other rigidbodies. Click on the object and view the Rigidbody component in the Inspector View. Be sure to uncheck the <mark>Use Gravity</mark> box. We won't be simulating gravity in our game.</p>
+
+<p>A sphere is a bit plane, so if you want to make your bullet a bit more interesting, you could add a trail effect and even a particle effect: <mark>Component->Effects->Trail Renderer</mark> and <mark>Component->Effects->Particle System.</mark></p>
+
+<p>Drag the Bullet object in the Hierarchy View onto the Bullet prefab in the Project View. This sets the prefab to that object. Prefabs are objects that we'll instantiate later.</p>
+
+<p>Now that all of that is set up, let's open the Bullet javascript file and add this:</p>
+
+<pre><code>#pragma strict
+
+var speed:float = 10;
+
+private var lifeTime:float = 3.0f;
+
+function Start () {
+	rigidbody.velocity = transform.forward * speed;
+}
+
+function Update () {
+
+	lifeTime -= Time.deltaTime;
+	if(lifeTime <= 0.0f) 
+		Destroy(gameObject);
+}
+
+function Hit() {
+	lifeTime = 0.3f;
+}</code></pre>
+
+<p>This code is simply setting the initial velocity of the object so it's going forward at it's speed. I've added some simple timer variables to ensure the bullet doesn't go on forever.</p>
+
+<p>Save this code, and return to the Unity 3D window.</p>
+
+
+<h3>6. Guns</h3>
+
+<p>The following steps will be very similar to the bullets.</p>
+
+<p>Create a new object: <mark>GameObject->Create Other->Cylinder</mark>. This will be a gun that fires the bullets. In the Hierarchy View, rename the Cylinder to Gun.</p>
+
+<p>Create a new folder in the Project View: <mark>Right-Click->Create->Folder</mark>, and name it Gun.</p>
+
+<p>In that folder, create a <mark>Prefab</mark> in the Project View: <mark>Right-Click->Create->Prefab</mark>, and name it Gun as well.</p>
+
+<p>And finally, also in that folder, create a javascript file in the Project View: <mark>Right-Click->Create->Javascript</mark>, also name it Gun.</p>
+
+<p>Now drag the new javascript file onto the Gun object in the Hierarchy View, adding the script as one of it's components.</p>
+
+<p>Drag the Gun object in the Hierarchy View onto the Gun prefab in the Project View.</p>
+
+<p>Now that all of that is set up, let's open the Gun javascript file and add this:</p>
+
+<pre><code>#pragma strict
+var bullet:GameObject;
+
+function Update () {
+
+	// Aim the gun!
+	var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+	
+	var direction = ray.direction;
+	
+	transform.LookAt(direction);
+	
+	transform.Rotate(Vector3(90,0,0));
+
+	// Fire the gun with the left click
+	if(Input.GetMouseButtonDown(0)) {
+		Instantiate (bullet, transform.position + transform.up * 1.0f, Quaternion.LookRotation(direction));
+	}
+}</code></pre>
+
+<p>The variable <mark>bullet</mark> will hold the Bullet prefab we created. This prefab is instantiated when the <mark>left mouse button</mark> is clicked. The raycasting is to get the direction the bullet should be going in.</p>
+
+
+
+<h3>5. Asteroids</h3>
+
+<p>I'm no 3D model expert, so i'll take this opportunity to show you how to use 2D images in 3D space!</p>
+
+<p>We'll make a plane which has a texture on its face and will always face the camera. We'll call it a <mark>Billboard</mark>.</p>
+
+<p>Create a new object: <mark>GameObject->Create Other->Plane</mark>.</p>
+
+<p>Create a new folder in the Project View: <mark>Right-Click->Create->Folder</mark>, and name it Asteroid.</p>
+
+<p>In that folder, create a <mark>Prefab</mark> in the Project View: <mark>Right-Click->Create->Prefab</mark>, and name it Asteroid as well.</p>
+
+<p>And finally, also in that folder, create a javascript file in the Project View: <mark>Right-Click->Create->Javascript</mark>, also name it Asteroid.</p>
+
+<p>Before we can continue, we'll need an asteroid graphic. Head <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a> and download <mark>asteroid.png</mark> from the project's repository.</p>
+
+<p>Drag this graphic onto the Project View of your Unity 3D window, into the Asteroid folder, adding it to the project.</p>
+
+<p>Now drag the graphic onto the Asteroid object in the Hierarchy View. You should see the face of the plane change to the graphic. You should also see a <mark>material</mark> was added to your assets in the Project View. This is the material on the object. The texture cannot be directly mapped to an object, it needs a material which contains that texture.</p>
+
+<p>Select this material and look at the Inspector. At the top there is a <mark>shader</mark> field. Select this and find <mark>Transparent->Diffuse</mark> in the drop-down menu. This will make the transparent parts of the texture also transparent on the plane.</p>
+
+<p>Now drag the new javascript file onto the Asteroid object in the Hierarchy View, adding the script as one of it's components.</p>
+
+<p>Drag the Asteroid object in the Hierarchy View onto the Asteroid prefab in the Project View.</p>
+
+<p>Now that all of that is set up, let's open the Asteroid javascript file and add this:</p>
+
+<pre><code>#pragma strict
+
+var health:int = 5;
+
+private var speed:float = 30.0f;
+
+function Start () {
+	rigidbody.velocity = speed * Vector3.Normalize(Camera.main.transform.position - transform.position);
+}
+
+function OnCollisionEnter (collisionInfo : Collision) {
+
+	if(collisionInfo.gameObject.tag == "MainCamera") {
+		Camera.main.GetComponent(CameraShake).Shake();
+		Destroy(gameObject);
+	} else if(collisionInfo.gameObject.tag == "Bullet") {
+
+		collisionInfo.gameObject.GetComponent(Bullet).Hit();
+
+	} else if(collisionInfo.gameObject.tag == "Asteroid") {
+		var data = GameObject.Find("Data").GetComponent(GameData);
+		data.asteroidsCollided += 1;
+	}
+}
+
+function OnBecameInvisible() {
+	
+	var data = GameObject.Find("Data");
+	if(data != null) {
+		data.GetComponent(GameData).asteroidsSurvived += 1;
+	}
+	Destroy(gameObject);
+}</code></pre>
+
+<p>I will describe the code in more detail in the physical tutorial.</p>
+
+<p>Save this file and return to the Unity 3D window.</p>
+
+
+<h3>6. Spawner</h3>
+
+<p>To handle the generation of the asteroid, we'll make an blank object with a script.</p>
+
+<p>Create a new object: <mark>GameObject->Create Empty</mark>. Name this object <mark>Spawner</mark></p>
+
+<p>Now create a javascript file in the Project View: <mark>Right-Click->Create->Javascript</mark>, name it Spawner, and drag it onto the Spawner object in the Hierarchy View.</p>
+
+<p>Open this file and add the following code:</p>
+
+<pre><code>#pragma strict
+
+var asteroid:GameObject;
+
+var spawnRange:float = 100.0f;
+
+private var timer:float = 0.0f;
+private var startTime:float = 5.0f;
+
+function Start () {
+
+}
+
+function Update () {
+
+	timer -= Time.deltaTime;
+	if(timer <= 0.0f){
+		SpawnAsteroid(); 
+		
+		startTime = startTime - startTime / 30;
+		timer = startTime;
+	}
+	
+	
+}
+
+function SpawnAsteroid() {
+	var x:float = Random.Range(-100,100);
+	var y:float = Random.Range(-100,100);
+	
+	Instantiate(asteroid, Vector3(x,y,spawnRange), Quaternion.identity);
+}</code></pre>
+
+<p>This code instantiates asteroid objects at progressively faster intervals, and in random x,y positions 100 units away from the center of the scene.</p>
+
+<p>Save this code and return to the Unity 3D window.</p>
+
+
+<h3>7. Scoring</h3>
+
+<p>CREATE DATA OBJECT IN mainmenu SCENE</p>
+
+<pre><code>#pragma strict
+
+// Some stats to show at the end of the game.
+var asteroidsSurvived:int = 0;
+
+var shotsFired:int = 0;
+
+var asteroidsCollided:int = 0;
+
+
+// Make this game object and all its transform children
+// survive when loading a new scene.
+function Awake () {
+	DontDestroyOnLoad (transform.gameObject);
+}</code></pre>
+
+<p>ADD SCORE CODE TO GUN.UPDATE AND GUI</p>
+
+<p>ADD THIS TO GUN.UPDATE() IF LEFT MOUSE BUTTON IS DOWN:</p>
+
+<pre><code>var data = GameObject.Find("Data").GetComponent(GameData);
+data.shotsFired += 1;</code></pre>
+
+<p>ADD THIS TO GUI:</p>
+
+<pre><code>function OnTriggerEnter(other:Collider) {
+
+	currHp -= 1;
+	if(currHp <= 0) {
+		Application.LoadLevel("gameover");
+	}
+	GetComponent(CameraShake).Shake();
+
+}</code></pre>
+
+<h3>8. Main Menu</h3>
+
+<p>Open mainmenu scene.</p>
+
+<p>Create new javascript: <mark>Right-Click->Create->Javascript</mark>, and name it MainMenu</p>
+
+<p>Drag the script onto the Main Camera in the Hierarchy View.</p>
+
+<p>Open the script and add:</p>
+
+<pre><code>var data = GameObject.Find("Data").GetComponent(GameData);
+data.shotsFired += 1;</code></pre>
+
+<p>ADD THIS TO GUI:</p>
+
+<pre><code>#pragma strict
+var guiStyle:GUIStyle;
+
+function Update () {
+	if(Input.GetKeyDown(KeyCode.Space)) {
+		Application.LoadLevel("game");
+	}
+}
+
+function OnGUI() {
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 2 - 50, 500,100),"PRESS 'SPACE' TO START",guiStyle); 
+}</code></pre>
+
+<p>Save this and return to the Unity 3D window.</p>
+
+<p>Select the Main Camera and modify the settings of the <mark>guiStyle</mark> variable so that the normal color is <mark>white</mark>, the font is <mark>50</mark>, and the alignment is <mark>MiddleCenter</mark>.</p>
+
+
+<h3>9. Game Over</h3>
+
+<p>Open gameover scene.</p>
+
+<p>Create new javascript: <mark>Right-Click->Create->Javascript</mark>, and name it GameOver</p>
+
+<p>Drag the script onto the Main Camera in the Hierarchy View.</p>
+
+<p>Open the script and add:</p>
+
+<pre><code>#pragma strict
+var gameData:GameData;
+var guiStyle:GUIStyle;
+
+function Start () {
+	gameData = GameObject.Find("Data").GetComponent(GameData);
+}
+
+function OnGUI() {
+
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 5, 500,100),"GAME OVER",guiStyle); 
+	
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 3, 500,100),"Asteroids Survived: " + gameData.asteroidsSurvived,guiStyle);
+	
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 3 + 100, 500,100),"Shots Fired: " + gameData.shotsFired,guiStyle);
+	
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 3 + 200, 500,100),"Asteroids Collided: " + gameData.asteroidsCollided,guiStyle);
+}
+
+function Update() {
+	if(Input.GetKeyDown(KeyCode.Space)) {
+		gameData.asteroidsSurvived = 0;
+		gameData.shotsFired = 0;
+		gameData.asteroidsCollided = 0;
+		
+		Application.LoadLevel("game");
+	}
+}</code></pre>
+
+<p>This script extracts the game data from the data object and displays it on the screen.</p>
+
+<p>Save this and return to the Unity 3D window.</p>
+
+<p>Select the Main Camera and modify the settings of the <mark>guiStyle</mark> variable so that the normal color is <mark>white</mark>, the font is <mark>50</mark>, and the alignment is <mark>MiddleCenter</mark>.</p>
+
+
+<h3>9. Test and Tweak!</h3>
+
+<p>There are plenty of tweaks you could make to this game. I encourage you to add effects to your objects and tweak the scripts to affect gameplay.</p>
+
+<p>You can find my version of the game <a href="https://github.com/NarPar/SpaceFightTutorialSeries">here</a>, which has a muzzle flash when you fire the guns!</p>
+
+<p>A great idea would be to add player movement as well! Give it a shot.</p>
 
         </article>
       </div>

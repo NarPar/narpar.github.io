@@ -408,11 +408,6 @@ data.shotsFired += 1;</code></pre>
 
 <p>Open the script and add:</p>
 
-<pre><code>var data = GameObject.Find("Data").GetComponent(GameData);
-data.shotsFired += 1;</code></pre>
-
-<p>ADD THIS TO GUI:</p>
-
 <pre><code>#pragma strict
 var guiStyle:GUIStyle;
 
@@ -468,7 +463,8 @@ function Update() {
 		
 		Application.LoadLevel("game");
 	}
-}</code></pre>
+}
+</code></pre>
 
 <p>This script extracts the game data from the data object and displays it on the screen.</p>
 

@@ -112,7 +112,7 @@
 
 <p>Open that file (probably in MonoDevelop) and add the following code:</p>
 
-<pre><code>#pragma strict
+<pre><code>{% highlight javascript %}#pragma strict
 
 var reticle:Texture;
 var hp:Texture;
@@ -139,7 +139,7 @@ function OnGUI() {
 	GUI.DrawTexture(Rect(Input.mousePosition.x - 75,Screen.height - Input.mousePosition.y - 75,150,150),reticle);
 	
 	GUI.DrawTexture(hpBar,hp);
-}</code></pre>
+}{% endhighlight %}</code></pre>
 
 <p>Now don't be afraid. Most of the hubbub is just positioning our textures on the screen, and calculating our hp bar width. I'll be going into detail about this in my physical tutorial, and will later update this tutorial with the details.</p> 
 

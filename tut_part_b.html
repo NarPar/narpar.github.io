@@ -1,0 +1,298 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Narpar.github.io</title>
+  <meta name="description" content="Nick Pettyjohn's website! Will include games I've made/worked on, and tutorials I've created.">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+
+
+<body>
+
+
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Nick Pettyjohn</h1>
+    </header>
+    <div id="container">
+            <ul class="menu">
+                        <li class="menu"><a href="index.html">Home</a></li>
+                        <li class="menu"><a href="tutorial.html">Tutorial</a></li>
+                </ul>
+          
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+                        <h2 class="title">
+                                <p>Unity Tutorial Part 2</p>
+                        </h2>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+         
+
+<h3>1. Get Caught Up</h3>
+
+<p>Go here and grab uni_tut_p2.proj. This tutorial will build upon said project.</p>
+
+
+<h3>2. Movement</h3>
+
+<p>Create new empty game objects: <mark>Game Object->Create Empty</mark>. Name it "Ship".</p>
+
+<p>Add Sphere Collider component: <mark>Component->Physics->Sphere Collider</mark>. Toggle "IsTrigger" to be on.</p>
+
+<p>In Hierarchy View, drag Main Camera onto Ship, making it a child object. This means when we move Ship, Main Camera does as well.</p>
+
+<p>In Project View, in the Player folder, create a javascript file: <mark>Right-Click->Create->Javascript</mark>, Movement.</p>
+
+<p>Drag Movement, from the Project View, onto Ship, in the Hierarchy View.</p>
+
+<p>Open Movement and add the following code:</p>
+
+<pre><code>#pragma strict
+
+private var speed:float = 0.0f;
+
+private var targetSpeed:float = 0.0f;
+private var maxSpeed:float = 60.0f;
+
+private var speedInc:float = 1.0f;
+private var acceleration:float = 3.0f;
+
+private var rotateSpeed:float = 1.0f;
+
+
+function Update () {
+
+	HandleRotate();
+	HandleSpeed();
+}
+
+function HandleSpeed(){
+
+	
+	if(Input.GetKey(KeyCode.W) && speed < maxSpeed){
+		speed += acceleration * Time.deltaTime;
+	} else if(Input.GetKey(KeyCode.S) && speed > 0) {
+		speed -= acceleration * Time.deltaTime;
+	}
+	
+	transform.Translate(Vector3.forward*speed*Time.deltaTime);
+}
+
+function HandleRotate() {
+
+ 	// Generate a plane that intersects the transform's position with an upwards normal.
+    var playerPlane = new Plane(transform.forward, transform.position + 100 * transform.forward);
+    Debug.DrawLine(transform.position, transform.position + 100 * transform.forward);
+   
+ 
+    // Generate a ray from the cursor position
+    var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+ 	Debug.DrawRay(ray.origin,ray.direction,Color.red);
+ 	
+ 
+ 
+    // Determine the point where the cursor ray intersects the plane.
+    // This will be the point that the object must look towards to be looking at the mouse.
+    // Raycasting to a Plane object only gives us a distance, so we'll have to take the distance,
+    //   then find the point along that ray that meets that distance.  This will be the point
+    //   to look at.
+    var hitdist = 0.0;
+    // If the ray is parallel to the plane, Raycast will return false.
+    if (playerPlane.Raycast (ray, hitdist)) {
+        // Get the point along the ray that hits the calculated distance.
+        var targetPoint = ray.GetPoint(hitdist);
+ 
+        // Determine the target rotation.  This is the rotation if the transform looks at the target point.
+        var targetRotation = Quaternion.LookRotation(targetPoint - transform.position);
+ 
+        // Smoothly rotate towards the target point.
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
+    }
+}
+
+function OnTriggerEnter (other : Collider) {
+	if(other.tag == "Asteroid") {
+		GetComponent(CameraShake).Shake();
+	}
+}</code></pre>
+
+<p>Test the project! Return to Unity 3D and it the <mark>Play</mark> button.</p>
+
+
+<h3>3. Starfield</h3>
+
+<p>Add a Particle System component to Ship: <mark>Select Ship in Hierarchy View</mark> then <mark>Component->Effects->Particle System</mark>.</p>
+
+<p>Open the Particle Systems properties, if it's not open already.</p>
+
+<p>Set <mark>Start Speed to 0</mark>.</p>
+
+<p>Set <mark>Simulation Space to World</mark>.</p>
+
+<p>Set <mark>Max Particles to 10000</mark>.</p>
+
+<p>Click <mark>Emission</mark> to open more parameters.</p>
+
+<p>Set <mark>Rate to 40</mark>.</p>
+
+<p>Click <mark>Shape</mark> to open more parameters.</p>
+
+<p>Set <mark>Shape to HemiSphere</mark>.</p>
+
+<p>Set <mark>Radius to 50</mark>.</p>
+
+<p>Click the circle next to <mark>Color Over Lifetime</mark> to enable it. Then open it's parameters.</p>
+
+<p>Click <mark>Color</mark> to open a window to edit the color over time.</p>
+
+<p>Click above the color field to create a new mark. Drag it to 1/4 of the rectangle. Create a second one, and drag it to 3/4 of the rectangle.</p>
+
+<p>Click the left-most tab on the top, and modify it's alpha value to 0. Do the same with the right-most tab.</p>
+
+<p>Test the project! See if it looks as though you're moving through a starfield.</p>
+
+
+<h3>4. New Spawner</h3>
+
+<p>Open up the Spawner.js in the Project View. Replace it's contents with the following code:</p>
+
+<pre><code>#pragma strict
+
+var asteroid:GameObject;
+
+var mobSpawnRadius:float = 200.0f;
+
+var numAsteroids:int = 20;
+
+function Start () {
+
+	
+	for(var i:int = 0; i < numAsteroids; i++) {
+		var ran = Random.insideUnitSphere * mobSpawnRadius;
+		//ran.y = 0.0;
+		var mobSpawnLocation : Vector3 = transform.position + ran;
+		
+		var a = Instantiate(asteroid, mobSpawnLocation, Quaternion.identity);
+	
+		var randomDirection = new Vector3(2.0*(Random.value-1.0), 2.0*(Random.value-1.0), 2.0*(Random.value-1.0));
+	
+		a.GetComponent(Asteroid).SetDirectionalVelocity(randomDirection,Random.Range(0.0f,2.0f));
+	}
+}</code></pre>
+
+<p>Click the <mark>Spawner</mark> in the Hierarchy View, and set it's position to <mark>X:0 Y:0 Z:500</mark></p>
+
+<p>Test the project! You should see a field of slowmoving, randomly directed asteroids!</p>
+
+
+<h3>5. HUD Objective Pointer</h3>
+
+<p>Create a Cube Game Object: <mark>Game Object->Create Other->Cube</mark>, and name it Objective.</p>
+
+<p>Add a Rigidbody component to Objective: <mark>Component->Physics->Rigidbody</mark>. Disable <mark>Use Gravity</mark>. Enable <mark>Is Kinematic</mark></p>
+
+<p>Create new Javascript file in Project View: <mark>Right-Click->Create->Javascript</mark>. Name it <mark>ObjectiveMarker</mark>.</p>
+
+<p>Click <mark>Ship</mark> to open it's children, and find Main Camera. Drag this file onto <mark>Main Camera</mark> in the Hierarchy View.</p>
+
+<p>Open the file and add the following code:</p>
+
+<pre><code>#pragma strict
+
+var objective:GameObject;
+var indicator:Texture;
+
+private var screenPosition:Rect;
+private var width:int = 50;
+private var height:int = 50;
+
+function Start () {
+ 	screenPosition = Rect(0,0,width,height);
+}
+
+function Update () {
+	var pos = Camera.main.WorldToScreenPoint(target.transform.position);
+	pos.y = Screen.height - pos.y;
+	
+	screenPosition.x = pos.x - width/2;
+	screenPosition.y = pos.y - height/2;
+}
+
+function OnGUI() {
+	if(target.renderer.isVisible){
+		GUI.DrawTexture(screenPosition,indicator);
+	}
+}
+</code></pre>
+
+<p>Return to Unity 3D. Select <mark>Main Camera</mark> object in the Hierarchy View: Click <mark>Ship</mark> to open it's children, and find Main Camera.</p>
+
+<p>Onto the script parameters in the Inspector View, drag the <mark>Objective</mark> game object onto the <mark>objective</mark> parameter. Also drag the <mark>hp</mark> texture from the Project View onto the <mark>indicator</mark> parameter.</p>
+
+<p>Create new Javascript file in Project View: <mark>Right-Click->Create->Javascript</mark>. Name it <mark>Objective</mark>.</p>
+
+<p>Drag this file onto the Objective game object in the Hierarchy View</p>
+
+<p>Open the file and add the following code:</p>
+
+<pre><code>#pragma strict
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnTriggerEnter (other : Collider) {
+		Debug.Log("WINNAR!!!");
+}
+</code></pre>
+
+
+<h3>6. Upgrade Scene</h3>
+
+
+
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+
+      <p><a href="https://github.com/NarPar" class="avatar"><img src="https://1.gravatar.com/avatar/856a43b221d0288eac434883b14952ec?d=https%3A%2F%2Fidenticons.github.com%2F7258e0dfa82db1400d9e001160b6f378.png&amp;s=30" width="48" height="48"/></a>View <a href="https://github.com/NarPar">NarPar</a> on <a href="https://www.github.com">GitHub</a></p>
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/NarPar/narpar.github.io/tarball/master" class="tar">tar</a><a href="https://github.com/NarPar/narpar.github.io/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>

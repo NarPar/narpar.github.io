@@ -255,23 +255,81 @@ function OnGUI() {
 
 <pre><code>#pragma strict
 
-function Start () {
-
-}
-
-function Update () {
-
-}
-
 function OnTriggerEnter (other : Collider) {
-		Debug.Log("WINNAR!!!");
+	if(other.tag == "Player") {
+		Application.LoadLevel("upgrade");
+	}
 }
 </code></pre>
 
 
 <h3>6. Upgrade Scene</h3>
 
+<p>Create a new Scene: <mark>File->New Scene</mark> and save this as <mark>upgrade</mark> and place it into the <mark>scenes</mark> folder in the Project View.</p>
 
+<p>Add this scene to the Build Settings: <mark>File->Build Settings->Add Current Scene</mark>.</p>
+
+<p>Create a new Javascript file in the <mark>Menus</mark> folder: <mark>Right-Click->Create->Javascript</mark>. Name it <mark>Upgrade</mark>.</p>
+
+<p>Drag this file onto the <mark>Main Camera</mark> object in the Hierarchy View.</p>
+
+<p>Open this file and add the following code:</p>
+
+<pre><code>#pragma strict
+
+var gameData:GameData;
+var guiStyle:GUIStyle;
+
+function Start () {
+	gameData = GameObject.Find("Data").GetComponent(GameData);
+	
+	gameData.points += 5;
+}
+
+function OnGUI() {
+	// Make a background box
+	GUI.Box(Rect((Screen.width / 2) - 300, Screen.height / 8, 550,300), "Level Complete!");
+
+	//GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 5, 500,100),"Level Complete!",guiStyle); 
+	
+	// Display stats of level
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 8 + 40, 500,30),"Asteroids Survived: " + gameData.asteroidsSurvived);
+	
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 8 + 80, 500,30),"Shots Fired: " + gameData.shotsFired);
+	
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 8 + 120, 500,30),"Asteroids Collided: " + gameData.asteroidsCollided);
+
+	// Make a background box
+	GUI.Box(Rect((Screen.width / 2) - 300, Screen.height / 2, 550,200), "Upgrade Your Ship");
+	
+	GUI.Label(Rect((Screen.width / 2) - 250, Screen.height / 2 + 50, 100,30),"Total Points = " + gameData.points); 
+	
+	// Speed
+	GUI.Label(Rect((Screen.width / 2) - 150, Screen.height / 2 + 100, 100,50),"Speed = " + gameData.speed); 
+	
+	
+	if (GUI.Button(Rect((Screen.width / 2) - 250, Screen.height / 2 + 100, 50,50),"+")) {
+		if(gameData.points > 0) {
+			Debug.Log("Increased Speed!");
+			gameData.speed += 1.0f;
+			gameData.points -= 1;
+		}
+	}
+	
+	GUI.Label(Rect((Screen.width / 2) - 50, Screen.height / 1 - 200, 500,100),"Press Space Bar to Continue"); 
+	
+}
+
+function Update() {
+	if(Input.GetKeyDown(KeyCode.Space)) {
+		gameData.asteroidsSurvived = 0;
+		gameData.shotsFired = 0;
+		gameData.asteroidsCollided = 0;
+		
+		Application.LoadLevel("game");
+	}
+}
+</code></pre>
 
         </article>
       </div>

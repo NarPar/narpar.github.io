@@ -56,7 +56,11 @@
 
 <p>Create new empty game objects: <mark>Game Object->Create Empty</mark>. Name it "Ship".</p>
 
-<p>Add Sphere Collider component: <mark>Component->Physics->Sphere Collider</mark>. Toggle "IsTrigger" to be on.</p>
+<p>Add Sphere Collider component: <mark>Component->Physics->Sphere Collider</mark>. Toggle <mark>Is Trigger</mark> to be on.</p>
+
+<p>Add Rigidbody component: <mark>Component->Physics->Rigidbody</mark>. Disable <mark>Use Gravity</mark> and enable <mark>Is Kinematic</mark>.</p>
+
+<p>From Main Camera, Remove the Collider component: <mark>Right-Click the component->Remove Component</mark>.</p>
 
 <p>In Hierarchy View, drag Main Camera onto Ship, making it a child object. This means when we move Ship, Main Camera does as well.</p>
 
